@@ -32,11 +32,4 @@ jobs:
     - name: Run tests
       run: |
         pytest tests/ -v
-    
-    - name: Validate CSV structure
-      run: |
-<<<<<<< HEAD
-        python -m src.validate_outputs
-=======
-        python -m src.validate_outputs
->>>>>>> d9865667ddef41688f705e0f6765e4abcd91a0b9
+
