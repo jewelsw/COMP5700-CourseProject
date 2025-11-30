@@ -1,8 +1,4 @@
 pandas>=2.0.0
 datasets>=2.14.0
 huggingface-hub>=0.16.0
-<<<<<<< HEAD
 pytest>=7.4.0
-=======
-pytest>=7.4.0
->>>>>>> d9865667ddef41688f705e0f6765e4abcd91a0b9
