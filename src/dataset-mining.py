@@ -10,7 +10,7 @@ if 'all_pull_request' in available_keys:
 else:
     key = available_keys[0]
     pr_data = all_pull_request[key]
-task1_df = pd.DataFrame({
+task1_df_full = pd.DataFrame({
     'TITLE': pr_data['title'],
     'ID': pr_data['id'],
     'AGENTNAME': pr_data['agent'],
@@ -18,11 +18,16 @@ task1_df = pd.DataFrame({
     'REPOID': pr_data['repo_id'],
     'REPOURL': pr_data['repo_url']
 })
-#task1_df.to_csv('task1_pull_requests.csv', index=False)
-
-# Ensure `final_df` exists in case later steps reference it (this file previously
-# referenced `final_df` but it wasn't created). For now use Task 1 data as the base.
-final_df = task1_df.copy()
+# Creating a sample for manageable processing
+SAMPLE_SIZE = 20000  
+RANDOM_SEED = 42
+task1_df = task1_df_full.groupby('AGENTNAME', group_keys=False).apply(
+    lambda x: x.sample(
+        n=min(len(x), int(SAMPLE_SIZE * len(x) / len(task1_df_full))),
+        random_state=RANDOM_SEED
+    )
+).reset_index(drop=True)
+task1_df.to_csv('task1_pull_requests_sample.csv', index=False)
 
 # Task 2: Repository
 all_repo = load_dataset("hao-li/AIDev", "all_repository")
