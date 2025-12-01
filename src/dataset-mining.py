@@ -27,7 +27,7 @@ task1_df = task1_df_full.groupby('AGENTNAME', group_keys=False).apply(
         random_state=RANDOM_SEED
     )
 ).reset_index(drop=True)
-task1_df.to_csv('task1_pull_requests_sample.csv', index=False)
+task1_df.to_csv('task1_pull_requests.csv', index=False)
 
 # Task 2: Repository
 all_repo = load_dataset("hao-li/AIDev", "all_repository")
@@ -43,7 +43,7 @@ task2_df = pd.DataFrame({
     'STARS': repo_data['stars'],
     'REPOURL': repo_data['url']
 })
-#task2_df.to_csv('task2_repositories.csv', index=False)
+task2_df.to_csv('task2_repositories.csv', index=False)
 
 # Task 3: PR Task Type
 pr_task_type = load_dataset("hao-li/AIDev", "pr_task_type")
@@ -60,7 +60,7 @@ task3_df = pd.DataFrame({
     'PRTYPE': pr_task_data['type'],
     'CONFIDENCE': pr_task_data['confidence']
 })
-#task3_df.to_csv('task3_pr_task_type.csv', index=False)
+task3_df.to_csv('task3_pr_task_type.csv', index=False)
 
 # Task 4: PR Commmit Details
 pr_commit_details = load_dataset("hao-li/AIDev", "pr_commit_details")
@@ -76,7 +76,7 @@ def clean_patch_text(x: object) -> object:
     x = re.sub(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]", "", x)
     x = x.encode('utf-8', 'replace').decode('utf-8')
     return x
-task4_df = pd.DataFrame({
+task4_df_full = pd.DataFrame({
     'PRID': list(pr_commit_data['pr_id']),
     'PRSHA': list(pr_commit_data['sha']),
     'PRCOMMITMESSAGE': list(pr_commit_data['message']),
@@ -87,7 +87,8 @@ task4_df = pd.DataFrame({
     'PRCHANGECOUNT': list(pr_commit_data['changes']),
     'PRDIFF': [clean_patch_text(x) for x in list(pr_commit_data['patch'])]
 })
-#task4_df.to_csv('task4_pr_commit_details.csv', index=False)
+task4_df = task4_df_full[task4_df_full['PRID'].isin(task1_df['ID'])].reset_index(drop=True)
+task4_df.to_csv('task4_pr_commit_details.csv', index=False)
 
 # Task 5: Security Analysis
 security_keywords = ['race', 'racy', 'buffer', 'overflow', 'stack', 'integer', 'signedness', 
